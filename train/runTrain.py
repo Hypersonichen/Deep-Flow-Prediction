@@ -22,7 +22,7 @@ import utils
 ######## Settings ########
 
 # number of training iterations
-iterations = 10000
+iterations = 10000*10
 # batch size
 batch_size = 10
 # learning rate, generator
@@ -32,10 +32,10 @@ decayLr = True
 # channel exponent to control network size
 expo = 5
 # data set config
-prop=None # by default, use all from "../data/train"
-#prop=[1000,0.75,0,0.25] # mix data from multiple directories
+#prop=None # by default, use all from "../data/train"
+prop=[1000,0.75,0,0.25] # mix data from multiple directories
 # save txt files with per epoch loss?
-saveL1 = False
+saveL1 = True
 
 ##########################
 
@@ -64,7 +64,9 @@ torch.cuda.manual_seed_all(seed)
 #torch.backends.cudnn.deterministic=True # warning, slower
 
 # create pytorch data object with dfp dataset
-data = dataset.TurbDataset(prop, shuffle=1)
+#data = dataset.TurbDataset(prop, shuffle=1)
+data = dataset.TurbDataset(prop, dataDir="/home/liwei/data/train/", dataDirTest="/home/liwei/data/test/", shuffle=1)
+
 trainLoader = DataLoader(data, batch_size=batch_size, shuffle=True, drop_last=True)
 print("Training batches: {}".format(len(trainLoader)))
 dataValidation = dataset.ValiDataset(data)

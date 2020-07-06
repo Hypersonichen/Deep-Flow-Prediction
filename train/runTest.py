@@ -18,7 +18,7 @@ from dataset import TurbDataset
 from DfpNet import TurbNetG, weights_init
 import utils
 from utils import log
-
+from matplotlib import pyplot as plt
 suffix = "" # customize loading & output if necessary
 prefix = ""
 if len(sys.argv)>1:
@@ -26,7 +26,12 @@ if len(sys.argv)>1:
     print("Output prefix: {}".format(prefix))
 
 expo = 5
-dataset = TurbDataset(None, mode=TurbDataset.TEST, dataDirTest="../data/test/")
+prop=[1000,0.75,0,0.25] # mix data from multiple directories
+
+#dataset = TurbDataset(None, mode=TurbDataset.TEST, dataDirTest="../data/test/")
+dataset = TurbDataset(prop, mode=TurbDataset.TEST, dataDir="/home/liwei/data/train/", dataDirTest="/home/liwei/data/test/")
+
+
 testLoader = DataLoader(dataset, batch_size=1, shuffle=False)
 
 targets = torch.FloatTensor(1, 3, 128, 128)
@@ -81,8 +86,23 @@ for si in range(25):
         targets_cpu, inputs_cpu = targets_cpu.float().cuda(), inputs_cpu.float().cuda()
         inputs.data.resize_as_(inputs_cpu).copy_(inputs_cpu)
         targets.data.resize_as_(targets_cpu).copy_(targets_cpu)
-
+        # Liwei #
+        if False:
+            for ii in range(3):
+                plt.subplot(1,3, ii+1)
+                plt.imshow(inputs.cpu()[0][ii])
+                plt.colorbar()
+            plt.show()
+        # Liwei #
         outputs = netG(inputs)
+        # Liwei #
+        if False:
+            for ii in range(3):
+                plt.subplot(1,3, ii+1)
+                plt.imshow(outputs.cpu().detach().numpy()[0][ii])
+                plt.colorbar()
+            plt.show()
+        # Liwei #
         outputs_cpu = outputs.data.cpu().numpy()[0]
         targets_cpu = targets_cpu.cpu().numpy()[0]
 
@@ -108,6 +128,19 @@ for si in range(25):
 
         outputs_denormalized = dataset.denormalize(outputs_cpu, v_norm)
         targets_denormalized = dataset.denormalize(targets_cpu, v_norm)
+        # Liwei #
+        if False:
+            for ii in range(3):
+                plt.subplot(1,3, ii+1)
+                plt.imshow(outputs_denormalized[ii])
+                plt.colorbar()
+            plt.figure()
+            for ii in range(3):
+                plt.subplot(1,3, ii+1)
+                plt.imshow(targets_denormalized[ii])
+                plt.colorbar()
+            plt.show()
+        # Liwei #
 
         # denormalized error 
         outputs_denormalized_comp=np.array([outputs_denormalized])
