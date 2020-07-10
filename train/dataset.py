@@ -53,9 +53,9 @@ def LoaderNormalizer(data, isTest = False, shuffle = 0, dataProp = None):
         files.sort()
         for i in range(shuffle):
             random.shuffle(files) 
-        if isTest:
-            print("Reducing data to load for tests")
-            files = files[0:min(10, len(files))]
+        #if isTest:
+        #    print("Reducing data to load for tests")
+        #    files = files[0:min(10, len(files))]
         data.totalLength = len(files)
         data.inputs  = np.empty((len(files), 3, 128, 128))
         data.targets = np.empty((len(files), 3, 128, 128))
@@ -92,9 +92,9 @@ def LoaderNormalizer(data, isTest = False, shuffle = 0, dataProp = None):
             if i >= (1-dataProp[3])*dataProp[0]:
                 npfile = np.load(data.dataDir + "shear/" + files3[i-temp_2])
                 d = npfile['a']
-                d = interpolateInside(d, [3], "nearest")
-                #d = interpolateInsideReverse(d, [4,5], "nearest")
-                #d = interpolateInside(d, [4,5], "nearest")
+                #d = interpolateInside(d, [3], "nearest")
+                ##d = interpolateInsideReverse(d, [4,5], "nearest")
+                ##d = interpolateInside(d, [4,5], "nearest")
 
 
                 data.inputs[i] = d[0:3]
@@ -105,16 +105,16 @@ def LoaderNormalizer(data, isTest = False, shuffle = 0, dataProp = None):
             elif i >= (dataProp[1])*dataProp[0]:
                 npfile = np.load(data.dataDir + "sup/" + files2[i-temp_1])
                 d = npfile['a']
-                d = interpolateInside(d, [3], "nearest")
-                #d = interpolateInside(d, [4,5], "nearest")
+                #d = interpolateInside(d, [3], "nearest")
+                ##d = interpolateInside(d, [4,5], "nearest")
                 data.inputs[i] = d[0:3]
                 data.targets[i] = d[3:6]
                 temp_2 = i + 1
             else:
                 npfile = np.load(data.dataDir + "reg/" + files1[i])
                 d = npfile['a']
-                d = interpolateInside(d, [3], "nearest")
-                #d = interpolateInside(d, [4,5], "nearest")
+                #d = interpolateInside(d, [3], "nearest")
+                ##d = interpolateInside(d, [4,5], "nearest")
                 data.inputs[i] = d[0:3]
                 data.targets[i] = d[3:6]
                 temp_1 = i + 1
@@ -194,8 +194,8 @@ def LoaderNormalizer(data, isTest = False, shuffle = 0, dataProp = None):
             npfile = np.load(data.dataDirTest + file)
             print("Liwei: load",file)
             d = npfile['a']
-            d = interpolateInside(d, [3], "nearest")
-            #d = interpolateInside(d, [4,5], "nearest")
+            #d = interpolateInside(d, [3], "nearest")
+            ##d = interpolateInside(d, [4,5], "nearest")
             data.inputs[i] = d[0:3]
             data.targets[i] = d[3:6]
 

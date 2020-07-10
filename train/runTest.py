@@ -25,12 +25,12 @@ if len(sys.argv)>1:
     prefix = sys.argv[1]
     print("Output prefix: {}".format(prefix))
 
-expo = 5
+expo = 3
 prop=[1000,0.75,0,0.25] # mix data from multiple directories
 
-#dataset = TurbDataset(None, mode=TurbDataset.TEST, dataDirTest="../data/test/")
-dataset = TurbDataset(prop, mode=TurbDataset.TEST, dataDir="/home/liwei/data/train/", dataDirTest="/home/liwei/data/test/")
-
+dataset = TurbDataset(None, mode=TurbDataset.TEST, dataDirTest="../data/test/")
+#dataset = TurbDataset(prop, mode=TurbDataset.TEST, dataDir="/home/liwei/data/train/", dataDirTest="/home/liwei/data/test/")
+DEBUG_LIWEI = False
 
 testLoader = DataLoader(dataset, batch_size=1, shuffle=False)
 
@@ -87,7 +87,7 @@ for si in range(25):
         inputs.data.resize_as_(inputs_cpu).copy_(inputs_cpu)
         targets.data.resize_as_(targets_cpu).copy_(targets_cpu)
         # Liwei #
-        if False:
+        if DEBUG_LIWEI:
             for ii in range(3):
                 plt.subplot(1,3, ii+1)
                 plt.imshow(inputs.cpu()[0][ii])
@@ -96,7 +96,7 @@ for si in range(25):
         # Liwei #
         outputs = netG(inputs)
         # Liwei #
-        if False:
+        if DEBUG_LIWEI:
             for ii in range(3):
                 plt.subplot(1,3, ii+1)
                 plt.imshow(outputs.cpu().detach().numpy()[0][ii])
@@ -124,12 +124,15 @@ for si in range(25):
 
         # Calculate the norm
         input_ndarray = inputs_cpu.cpu().numpy()[0]
-        v_norm = ( np.max(np.abs(input_ndarray[0,:,:]))**2 + np.max(np.abs(input_ndarray[1,:,:]))**2 )**0.5
+        if DEBUG_LIWEI:
+            v_norm = 0.01 # note that v_norm should be different for each case.
+        else:
+            v_norm = ( np.max(np.abs(input_ndarray[0,:,:]))**2 + np.max(np.abs(input_ndarray[1,:,:]))**2 )**0.5
 
         outputs_denormalized = dataset.denormalize(outputs_cpu, v_norm)
         targets_denormalized = dataset.denormalize(targets_cpu, v_norm)
         # Liwei #
-        if False:
+        if DEBUG_LIWEI:
             for ii in range(3):
                 plt.subplot(1,3, ii+1)
                 plt.imshow(outputs_denormalized[ii])
